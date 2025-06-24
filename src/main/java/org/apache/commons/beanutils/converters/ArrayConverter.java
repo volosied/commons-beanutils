@@ -223,7 +223,7 @@ public class ArrayConverter extends AbstractConverter {
         if (value instanceof Number ||
             value instanceof Boolean ||
             value instanceof Date) {
-            final List<Object> list = new ArrayList<>(1);
+            final List<Object> list = new ArrayList<Object>(1);
             list.add(value);
             return list;
         }
@@ -413,7 +413,7 @@ public class ArrayConverter extends AbstractConverter {
                 if (ttype == StreamTokenizer.TT_WORD || ttype > 0) {
                     if (st.sval != null) {
                         if (list == null) {
-                            list = new ArrayList<>();
+                            list = new ArrayList<String>();
                         }
                         list.add(st.sval);
                     }

@@ -175,7 +175,7 @@ public class MethodUtils {
      */
     private static void cacheMethod(final MethodDescriptor md, final Method method) {
         if (CACHE_METHODS && method != null) {
-            cache.put(md, new WeakReference<>(method));
+            cache.put(md, new WeakReference<Method>(method));
         }
     }
 

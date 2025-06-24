@@ -414,10 +414,10 @@ class WeakFastHashMap<K, V> extends HashMap<K, V> {
     public Object clone() {
         WeakFastHashMap<K, V> results = null;
         if (fast) {
-            results = new WeakFastHashMap<>(map);
+            results = new WeakFastHashMap<K,V>(map);
         } else {
             synchronized (map) {
-                results = new WeakFastHashMap<>(map);
+                results = new WeakFastHashMap<K,V>(map);
             }
         }
         results.setFast(getFast());
@@ -468,21 +468,21 @@ class WeakFastHashMap<K, V> extends HashMap<K, V> {
     }
 
     protected Map<K, V> createMap() {
-        return new WeakHashMap<>();
+        return new WeakHashMap<K,V>();
     }
 
     protected Map<K, V> createMap(final int capacity) {
-        return new WeakHashMap<>(capacity);
+        return new WeakHashMap<K,V>(capacity);
     }
 
     // Basic object methods
 
     protected Map<K, V> createMap(final int capacity, final float factor) {
-        return new WeakHashMap<>(capacity, factor);
+        return new WeakHashMap<K,V>(capacity, factor);
     }
 
     protected Map<K, V> createMap(final Map<? extends K, ? extends V> map) {
-        return new WeakHashMap<>(map);
+        return new WeakHashMap<K,V>(map);
     }
 
     /**

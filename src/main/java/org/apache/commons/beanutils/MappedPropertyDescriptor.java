@@ -65,15 +65,15 @@ public class MappedPropertyDescriptor extends PropertyDescriptor {
                 className = m.getDeclaringClass().getName();
                 methodName = m.getName();
                 // Compiler needs generic.
-                methodRef = new SoftReference<>(m);
+                methodRef = new SoftReference<Method>(m);
                 // Compiler needs generic.
-                classRef = new WeakReference<>(m.getDeclaringClass());
+                classRef = new WeakReference<Class<?>>(m.getDeclaringClass());
                 final Class<?>[] types = m.getParameterTypes();
                 if (types.length == 2) {
                     // Compiler needs generic.
-                    writeParamTypeRef0 = new WeakReference<>(types[0]);
+                    writeParamTypeRef0 = new WeakReference<Class<?>>(types[0]);
                     // Compiler needs generic.
-                    writeParamTypeRef1 = new WeakReference<>(types[1]);
+                    writeParamTypeRef1 = new WeakReference<Class<?>>(types[1]);
                     writeParamClassNames = new String[2];
                     writeParamClassNames[0] = types[0].getName();
                     writeParamClassNames[1] = types[1].getName();
@@ -91,7 +91,7 @@ public class MappedPropertyDescriptor extends PropertyDescriptor {
                     clazz = reLoadClass();
                     if (clazz != null) {
                         // Compiler needs generic.
-                        classRef = new WeakReference<>(clazz);
+                        classRef = new WeakReference<Class<?>>(clazz);
                     }
                 }
                 if (clazz == null) {
@@ -106,7 +106,7 @@ public class MappedPropertyDescriptor extends PropertyDescriptor {
                         paramTypes[0] = reLoadClass(writeParamClassNames[0]);
                         if (paramTypes[0] != null) {
                             // Compiler needs generic.
-                            writeParamTypeRef0 = new WeakReference<>(paramTypes[0]);
+                            writeParamTypeRef0 = new WeakReference<Class<?>>(paramTypes[0]);
                         }
                     }
                     paramTypes[1] = writeParamTypeRef1.get();
@@ -114,7 +114,7 @@ public class MappedPropertyDescriptor extends PropertyDescriptor {
                         paramTypes[1] = reLoadClass(writeParamClassNames[1]);
                         if (paramTypes[1] != null) {
                             // Compiler needs generic.
-                            writeParamTypeRef1 = new WeakReference<>(paramTypes[1]);
+                            writeParamTypeRef1 = new WeakReference<Class<?>>(paramTypes[1]);
                         }
                     }
                 } else {
@@ -127,7 +127,7 @@ public class MappedPropertyDescriptor extends PropertyDescriptor {
                 } catch (final NoSuchMethodException e) {
                     throw new IllegalStateException("Method " + methodName + " for " + className + " could not be reconstructed - method not found", e);
                 }
-                methodRef = new SoftReference<>(m);
+                methodRef = new SoftReference<Method>(m);
             }
             return m;
         }
@@ -460,7 +460,7 @@ public class MappedPropertyDescriptor extends PropertyDescriptor {
                 mappedPropertyType = params[1];
             }
             // Compiler needs generic.
-            mappedPropertyTypeRef = new SoftReference<>(mappedPropertyType);
+            mappedPropertyTypeRef = new SoftReference<Class<?>>(mappedPropertyType);
         } catch (final IntrospectionException ex) {
             throw ex;
         }

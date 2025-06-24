@@ -93,7 +93,7 @@ public class WrapDynaClass implements DynaClass {
         new ContextClassLoaderLocal<Map<CacheKey, WrapDynaClass>>() {
             @Override
             protected Map<CacheKey, WrapDynaClass> initialValue() {
-                return new WeakHashMap<>();
+                return new WeakHashMap<CacheKey, WrapDynaClass>();
         }
     };
 
@@ -171,7 +171,7 @@ public class WrapDynaClass implements DynaClass {
         @Override
         public Set<Object> keySet() {
             // extract the classes from the key to stay backwards compatible
-            final Set<Object> result = new HashSet<>();
+            final Set<Object> result = new HashSet<Object>();
             for (final CacheKey k : getClassesCache().keySet()) {
                 result.add(k.beanClass);
             }
@@ -298,7 +298,7 @@ public class WrapDynaClass implements DynaClass {
      * property name.  Individual descriptor instances will be the same
      * instances as those in the <code>descriptors</code> list.
      */
-    protected HashMap<String, PropertyDescriptor> descriptorsMap = new HashMap<>();
+    protected HashMap<String, PropertyDescriptor> descriptorsMap = new HashMap<String, PropertyDescriptor>();
 
     /**
      * The set of dynamic properties that are part of this DynaClass.
@@ -310,7 +310,7 @@ public class WrapDynaClass implements DynaClass {
      * keyed by the property name.  Individual descriptor instances will
      * be the same instances as those in the <code>properties</code> list.
      */
-    protected HashMap<String, DynaProperty> propertiesMap = new HashMap<>();
+    protected HashMap<String, DynaProperty> propertiesMap = new HashMap<String, DynaProperty>();
 
     /**
      * Construct a new WrapDynaClass for the specified JavaBean class.  This
@@ -322,7 +322,7 @@ public class WrapDynaClass implements DynaClass {
      */
     private WrapDynaClass(final Class<?> beanClass, final PropertyUtilsBean propUtils) {
         // Compiler needs generic.
-        this.beanClassRef = new SoftReference<>(beanClass);
+        this.beanClassRef = new SoftReference<Class<?>>(beanClass);
         this.beanClassName = beanClass.getName();
         propertyUtilsBean = propUtils;
         introspect();
@@ -419,10 +419,9 @@ public class WrapDynaClass implements DynaClass {
             regulars = new PropertyDescriptor[0];
         }
         @SuppressWarnings("deprecation")
-        Map<?, ?> mappeds =
-                PropertyUtils.getMappedPropertyDescriptors(beanClass);
+        Map<?, ?> mappeds = PropertyUtils.getMappedPropertyDescriptors(beanClass);
         if (mappeds == null) {
-            mappeds = new HashMap<>();
+            mappeds = new HashMap();
         }
         // Construct corresponding DynaProperty information
         properties = new DynaProperty[regulars.length + mappeds.size()];

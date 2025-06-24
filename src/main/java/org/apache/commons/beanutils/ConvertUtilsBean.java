@@ -146,7 +146,7 @@ public class ConvertUtilsBean {
      * into objects of a specified Class, keyed by the destination Class.
      */
     private final WeakFastHashMap<Class<?>, Converter> converters =
-            new WeakFastHashMap<>();
+            new WeakFastHashMap<Class<?>, Converter>();
 
     /**
      * The <code>Log</code> instance for this class.

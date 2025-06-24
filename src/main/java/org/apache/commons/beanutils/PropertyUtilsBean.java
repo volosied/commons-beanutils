@@ -144,11 +144,11 @@ public class PropertyUtilsBean {
 
     /** Base constructor */
     public PropertyUtilsBean() {
-        descriptorsCache = new WeakFastHashMap<>();
+        descriptorsCache = new WeakFastHashMap<Class<?>, BeanIntrospectionData>();
         descriptorsCache.setFast(true);
-        mappedDescriptorsCache = new WeakFastHashMap<>();
+        mappedDescriptorsCache = new WeakFastHashMap<Class<?>, FastHashMap>();
         mappedDescriptorsCache.setFast(true);
-        introspectors = new CopyOnWriteArrayList<>();
+        introspectors = new CopyOnWriteArrayList<BeanIntrospector>();
         resetBeanIntrospectors();
     }
 
@@ -312,7 +312,7 @@ public class PropertyUtilsBean {
         if (bean == null) {
             throw new IllegalArgumentException("No bean specified");
         }
-        final Map<String, Object> description = new HashMap<>();
+        final Map<String, Object> description = new HashMap<String, Object>();
         if (bean instanceof DynaBean) {
             final DynaProperty[] descriptors =
                 ((DynaBean) bean).getDynaClass().getDynaProperties();
@@ -1284,7 +1284,35 @@ public class PropertyUtilsBean {
         }
         try {
             return method.invoke(bean, values);
-        } catch (final NullPointerException | IllegalArgumentException cause) {
+        } catch (final NullPointerException cause) {
+            final StringBuilder valueString = new StringBuilder();
+            if (values != null) {
+                for (int i = 0; i < values.length; i++) {
+                    if (i > 0) {
+                        valueString.append(", ");
+                    }
+                    if (values[i] == null) {
+                        valueString.append("<null>");
+                    } else {
+                        valueString.append(values[i].getClass().getName());
+                    }
+                }
+            }
+            final StringBuilder expectedString = new StringBuilder();
+            final Class<?>[] parTypes = method.getParameterTypes();
+            if (parTypes != null) {
+                for (int i = 0; i < parTypes.length; i++) {
+                    if (i > 0) {
+                        expectedString.append(", ");
+                    }
+                    expectedString.append(parTypes[i].getName());
+                }
+            }
+            throw new IllegalArgumentException("Cannot invoke " + method.getDeclaringClass().getName() + "." + method.getName() + " on bean class '" +
+                    bean.getClass() + "' - " + cause.getMessage() + " - had objects of type \"" +
+                    valueString.append("\" but expected signature \"").append(expectedString.toString()).append("\"").toString(), cause);
+
+        } catch (final IllegalArgumentException cause) {
             final StringBuilder valueString = new StringBuilder();
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
@@ -1341,7 +1369,11 @@ public class PropertyUtilsBean {
             Object nestedBean = null;
             try {
                 nestedBean = getProperty(bean, next);
-            } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            } catch (final IllegalAccessException e) {
+                return false;
+            } catch (final InvocationTargetException e) {
+                return false;
+            } catch (final NoSuchMethodException e) {
                 return false;
             }
             if (nestedBean == null) {
@@ -1380,9 +1412,14 @@ public class PropertyUtilsBean {
                 readMethod = MethodUtils.getAccessibleMethod(bean.getClass(), readMethod);
             }
             return readMethod != null;
-        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            return false;
-        }
+            } catch (final IllegalAccessException e) {
+                return false;
+            } catch (final InvocationTargetException e) {
+                return false;
+            } catch (final NoSuchMethodException e) {
+                return false;
+            }
+
 
     }
 
@@ -1412,7 +1449,11 @@ public class PropertyUtilsBean {
             Object nestedBean = null;
             try {
                 nestedBean = getProperty(bean, next);
-            } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            } catch (final IllegalAccessException e) {
+                return false;
+            } catch (final InvocationTargetException e) {
+                return false;
+            } catch (final NoSuchMethodException e) {
                 return false;
             }
             if (nestedBean == null) {
@@ -1451,9 +1492,14 @@ public class PropertyUtilsBean {
                 writeMethod = MethodUtils.getAccessibleMethod(bean.getClass(), writeMethod);
             }
             return writeMethod != null;
-        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (final IllegalAccessException e) {
+            return false;
+        } catch (final InvocationTargetException e) {
+            return false;
+        } catch (final NoSuchMethodException e) {
             return false;
         }
+
 
     }
 

@@ -165,7 +165,7 @@ public class BeanMap extends AbstractMap<Object, Object> implements Cloneable {
 
     private static Map<Class<? extends Object>, Transformer> createTypeTransformers() {
         final Map<Class<? extends Object>, Transformer> defaultTransformers =
-                new HashMap<>();
+                new HashMap<Class<? extends Object>, Transformer>();
         defaultTransformers.put(
             Boolean.TYPE,
             new Transformer() {
@@ -243,13 +243,13 @@ public class BeanMap extends AbstractMap<Object, Object> implements Cloneable {
 
     private transient Object bean;
 
-    private transient HashMap<String, Method> readMethods = new HashMap<>();
+    private transient HashMap<String, Method> readMethods = new HashMap<String, Method>();
 
-    private transient HashMap<String, Method> writeMethods = new HashMap<>();
+    private transient HashMap<String, Method> writeMethods = new HashMap<String, Method>();
 
     // Constructors
 
-    private transient HashMap<String, Class<? extends Object>> types = new HashMap<>();
+    private transient HashMap<String, Class<? extends Object>> types = new HashMap<String, Class<? extends Object>>();
 
     /**
      * Constructs a new empty <code>BeanMap</code>.
@@ -438,7 +438,9 @@ public class BeanMap extends AbstractMap<Object, Object> implements Cloneable {
                 }
             }
             return new Object[] { value };
-        } catch (final InvocationTargetException | InstantiationException e) {
+        } catch (final InvocationTargetException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        } catch (final InstantiationException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
     }
@@ -526,7 +528,13 @@ public class BeanMap extends AbstractMap<Object, Object> implements Cloneable {
             if (method != null) {
                 try {
                     return method.invoke(bean, NULL_ARGUMENTS);
-                } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException e) {
+                } catch (final IllegalAccessException e) {
+                    logWarn(e);
+                } catch (final IllegalArgumentException e) {
+                    logWarn(e);
+                } catch (final InvocationTargetException e) {
+                    logWarn(e);
+                } catch (final NullPointerException e) {
                     logWarn(e);
                 }
             }
@@ -715,7 +723,9 @@ public class BeanMap extends AbstractMap<Object, Object> implements Cloneable {
 
                 final Object newValue = get(name);
                 firePropertyChange(name, oldValue, newValue);
-            } catch (final InvocationTargetException | IllegalAccessException e) {
+            } catch (final InvocationTargetException e) {
+                throw new IllegalArgumentException(e.getMessage(), e);
+            } catch (final IllegalAccessException e) {
                 throw new IllegalArgumentException(e.getMessage(), e);
             }
             return oldValue;
@@ -811,7 +821,7 @@ public class BeanMap extends AbstractMap<Object, Object> implements Cloneable {
      */
     @Override
     public Collection<Object> values() {
-        final ArrayList<Object> answer = new ArrayList<>(readMethods.size());
+        final ArrayList<Object> answer = new ArrayList<Object>(readMethods.size());
         for (final Iterator<Object> iter = valueIterator(); iter.hasNext();) {
             answer.add(iter.next());
         }

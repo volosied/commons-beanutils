@@ -440,7 +440,7 @@ protected static final BigInteger BigInteger_ZERO = new BigInteger("0");
      * @return The default value for an indexed property (java.util.ArrayList)
      */
     protected Object defaultIndexedProperty(final String name) {
-        return new ArrayList<>();
+        return new ArrayList<Object>();
     }
 
     /**
@@ -454,7 +454,7 @@ protected static final BigInteger BigInteger_ZERO = new BigInteger("0");
      * @return The default value for a mapped property (java.util.HashMap)
      */
     protected Map<String, Object> defaultMappedProperty(final String name) {
-        return new HashMap<>();
+        return new HashMap<String, Object>();
     }
 
     /**
@@ -725,7 +725,7 @@ protected static final BigInteger BigInteger_ZERO = new BigInteger("0");
      * @return a new Map instance
      */
     protected Map<String, Object> newMap() {
-        return new HashMap<>();
+        return new HashMap<String, Object>();
     }
 
     /**
