@@ -164,15 +164,80 @@ public class BeanMap extends AbstractMap<Object, Object> implements Cloneable {
     };
 
     private static Map<Class<? extends Object>, Transformer> createTypeTransformers() {
-        final Map<Class<? extends Object>, Transformer> defaultTransformers = new HashMap<>();
-        defaultTransformers.put(Boolean.TYPE, input -> Boolean.valueOf(input.toString()));
-        defaultTransformers.put(Character.TYPE, input -> Character.valueOf(input.toString().charAt(0)));
-        defaultTransformers.put(Byte.TYPE, input -> Byte.valueOf(input.toString()));
-        defaultTransformers.put(Short.TYPE, input -> Short.valueOf(input.toString()));
-        defaultTransformers.put(Integer.TYPE, input -> Integer.valueOf(input.toString()));
-        defaultTransformers.put(Long.TYPE, input -> Long.valueOf(input.toString()));
-        defaultTransformers.put(Float.TYPE, input -> Float.valueOf(input.toString()));
-        defaultTransformers.put(Double.TYPE, input -> Double.valueOf(input.toString()));
+        final Map<Class<? extends Object>, Transformer> defaultTransformers =
+                new HashMap<>();
+        defaultTransformers.put(
+            Boolean.TYPE,
+            new Transformer() {
+                @Override
+                public Object transform( final Object input ) {
+                    return Boolean.valueOf( input.toString() );
+                }
+            }
+        );
+        defaultTransformers.put(
+            Character.TYPE,
+            new Transformer() {
+                @Override
+                public Object transform( final Object input ) {
+                    return Character.valueOf(input.toString().charAt( 0 ));
+                }
+            }
+        );
+        defaultTransformers.put(
+            Byte.TYPE,
+            new Transformer() {
+                @Override
+                public Object transform( final Object input ) {
+                    return Byte.valueOf( input.toString() );
+                }
+            }
+        );
+        defaultTransformers.put(
+            Short.TYPE,
+            new Transformer() {
+                @Override
+                public Object transform( final Object input ) {
+                    return Short.valueOf( input.toString() );
+                }
+            }
+        );
+        defaultTransformers.put(
+            Integer.TYPE,
+            new Transformer() {
+                @Override
+                public Object transform( final Object input ) {
+                    return Integer.valueOf( input.toString() );
+                }
+            }
+        );
+        defaultTransformers.put(
+            Long.TYPE,
+            new Transformer() {
+                @Override
+                public Object transform( final Object input ) {
+                    return Long.valueOf( input.toString() );
+                }
+            }
+        );
+        defaultTransformers.put(
+            Float.TYPE,
+            new Transformer() {
+                @Override
+                public Object transform( final Object input ) {
+                    return Float.valueOf( input.toString() );
+                }
+            }
+        );
+        defaultTransformers.put(
+            Double.TYPE,
+            new Transformer() {
+                @Override
+                public Object transform( final Object input ) {
+                    return Double.valueOf( input.toString() );
+                }
+            }
+        );
         return defaultTransformers;
     }
 

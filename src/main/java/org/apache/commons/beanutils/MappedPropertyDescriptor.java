@@ -94,7 +94,10 @@ public class MappedPropertyDescriptor extends PropertyDescriptor {
                         classRef = new WeakReference<>(clazz);
                     }
                 }
-                Objects.requireNonNull(clazz, () -> "Method " + methodName + " for " + className + " could not be reconstructed - class reference has gone");
+                if (clazz == null) {
+                    throw new RuntimeException("Method " + methodName + " for " +
+                            className + " could not be reconstructed - class reference has gone");
+                }
                 Class<?>[] paramTypes = null;
                 if (writeParamClassNames != null) {
                     paramTypes = new Class[2];
