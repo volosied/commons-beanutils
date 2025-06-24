@@ -22,7 +22,6 @@ import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * <p>Minimal implementation of the <code>DynaBean</code> interface.  Can be
@@ -81,12 +80,18 @@ public class BasicDynaBean implements DynaBean, Serializable {
      */
     @Override
     public boolean contains(final String name, final String key) {
+
         final Object value = values.get(name);
-        Objects.requireNonNull(value, () -> "No mapped value for '" + name + "(" + key + ")'");
+        if (value == null) {
+            throw new NullPointerException
+                    ("No mapped value for '" + name + "(" + key + ")'");
+        }
         if (value instanceof Map) {
             return ((Map<?, ?>) value).containsKey(key);
         }
-        throw new IllegalArgumentException("Non-mapped property for '" + name + "(" + key + ")'");
+        throw new IllegalArgumentException
+                ("Non-mapped property for '" + name + "(" + key + ")'");
+
     }
 
     /**
@@ -157,15 +162,21 @@ public class BasicDynaBean implements DynaBean, Serializable {
      */
     @Override
     public Object get(final String name, final int index) {
+
         final Object value = values.get(name);
-        Objects.requireNonNull(value, () -> "No indexed value for '" + name + "[" + index + "]'");
+        if (value == null) {
+            throw new NullPointerException
+                    ("No indexed value for '" + name + "[" + index + "]'");
+        }
         if (value.getClass().isArray()) {
             return Array.get(value, index);
         }
         if (value instanceof List) {
             return ((List<?>) value).get(index);
         }
-        throw new IllegalArgumentException("Non-indexed property for '" + name + "[" + index + "]'");
+        throw new IllegalArgumentException
+                ("Non-indexed property for '" + name + "[" + index + "]'");
+
     }
 
     /**
@@ -182,12 +193,18 @@ public class BasicDynaBean implements DynaBean, Serializable {
      */
     @Override
     public Object get(final String name, final String key) {
+
         final Object value = values.get(name);
-        Objects.requireNonNull(value, () -> "No mapped value for '" + name + "(" + key + ")'");
+        if (value == null) {
+            throw new NullPointerException
+                    ("No mapped value for '" + name + "(" + key + ")'");
+        }
         if (value instanceof Map) {
             return ((Map<?, ?>) value).get(key);
         }
-        throw new IllegalArgumentException("Non-mapped property for '" + name + "(" + key + ")'");
+        throw new IllegalArgumentException
+                ("Non-mapped property for '" + name + "(" + key + ")'");
+
     }
 
     /**
@@ -280,12 +297,18 @@ public class BasicDynaBean implements DynaBean, Serializable {
      */
     @Override
     public void remove(final String name, final String key) {
+
         final Object value = values.get(name);
-        Objects.requireNonNull(value, () -> "No mapped value for '" + name + "(" + key + ")'");
+        if (value == null) {
+            throw new NullPointerException
+                    ("No mapped value for '" + name + "(" + key + ")'");
+        }
         if (!(value instanceof Map)) {
-            throw new IllegalArgumentException("Non-mapped property for '" + name + "(" + key + ")'");
+            throw new IllegalArgumentException
+                    ("Non-mapped property for '" + name + "(" + key + ")'");
         }
         ((Map<?, ?>) value).remove(key);
+
     }
 
     /**
@@ -307,7 +330,10 @@ public class BasicDynaBean implements DynaBean, Serializable {
     public void set(final String name, final int index, final Object value) {
 
         final Object prop = values.get(name);
-        Objects.requireNonNull(prop, () -> "No indexed value for '" + name + "[" + index + "]'");
+        if (prop == null) {
+            throw new NullPointerException
+                    ("No indexed value for '" + name + "[" + index + "]'");
+        }
         if (prop.getClass().isArray()) {
             Array.set(prop, index, value);
         } else if (prop instanceof List) {
@@ -375,18 +401,23 @@ public class BasicDynaBean implements DynaBean, Serializable {
      */
     @Override
     public void set(final String name, final String key, final Object value) {
+
         final Object prop = values.get(name);
-        Objects.requireNonNull(prop, () -> "No mapped value for '" + name + "(" + key + ")'");
+        if (prop == null) {
+            throw new NullPointerException
+                    ("No mapped value for '" + name + "(" + key + ")'");
+        }
         if (!(prop instanceof Map)) {
             throw new IllegalArgumentException
                     ("Non-mapped property for '" + name + "(" + key + ")'");
         }
+        @SuppressWarnings("unchecked")
+        final
         // This is safe to cast because mapped properties are always
         // maps of types String -> Object
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> map = (Map<String, Object>) prop;
+        Map<String, Object> map = (Map<String, Object>) prop;
         map.put(key, value);
+
     }
 
 }
-
