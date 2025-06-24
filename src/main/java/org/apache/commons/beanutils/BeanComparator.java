@@ -18,6 +18,7 @@
 package org.apache.commons.beanutils;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 
 import org.apache.commons.collections.comparators.ComparableComparator;
@@ -138,7 +139,11 @@ public class BeanComparator<T> implements Comparator<T>, Serializable {
             final Object value1 = PropertyUtils.getProperty(o1, property);
             final Object value2 = PropertyUtils.getProperty(o2, property);
             return internalCompare(value1, value2);
-        } catch (final ReflectiveOperationException e) {
+        } catch (IllegalAccessException e) {
+           throw new IllegalArgumentException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException(e);
+        } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         }
     }

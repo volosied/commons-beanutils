@@ -432,11 +432,24 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public void setPatterns(final String[] patterns) {
         this.patterns = patterns;
         if (patterns != null && patterns.length > 1) {
-            final String buffer = String.join(", ", patterns);
+            final String buffer = join(", ", patterns);
             displayPatterns = buffer;
         }
         setUseLocaleFormat(true);
     }
+    // String.join(CharSequence delimiter, CharSequence... elements) was added in Java 8, so here's a replacement for Java 6.
+    // Joins the characters within the elements array by the delimiter. 
+    private String join(CharSequence delimiter, CharSequence[] elements) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < elements.length; i++) {
+            sb.append(elements[i]);
+            if (i < elements.length - 1) {
+                sb.append(delimiter);
+            }
+        }
+        return sb.toString();
+    }
+
 
     /**
      * Set the Time Zone to use when converting dates.
