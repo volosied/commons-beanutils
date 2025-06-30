@@ -134,7 +134,7 @@ public abstract class AbstractArrayConverter implements Converter {
      * @throws NullPointerException if <code>svalue</code>
      *  is <code>null</code>
      */
-    protected List parseElements(String svalue) {
+    protected List<String> parseElements(String svalue) {
 
         // Validate the passed argument
         if (svalue == null) {
@@ -161,7 +161,7 @@ public abstract class AbstractArrayConverter implements Converter {
             st.wordChars('-', '-');
 
             // Split comma-delimited tokens into a List
-            final ArrayList list = new ArrayList();
+            final ArrayList<String> list = new ArrayList<String>();
             while (true) {
                 final int ttype = st.nextToken();
                 if ((ttype == StreamTokenizer.TT_WORD) ||
@@ -176,7 +176,7 @@ public abstract class AbstractArrayConverter implements Converter {
             }
 
             // Return the completed list
-            return (list);
+            return list;
 
         } catch (final IOException e) {
 

@@ -192,7 +192,7 @@ public abstract class BaseDynaBeanMapDecorator<K> implements Map<K, Object> {
     public Set<Map.Entry<K, Object>> entrySet() {
         final DynaProperty[] properties = getDynaProperties();
         final Set<Map.Entry<K, Object>> set = new HashSet<Map.Entry<K, Object>>(properties.length);
-        for (DynaProperty propertie : properties) {
+        for (final DynaProperty propertie : properties) {
             final K key = convertKey(propertie.getName());
             final Object value = getDynaBean().get(propertie.getName());
             set.add(new MapEntry<K>(key, value));
