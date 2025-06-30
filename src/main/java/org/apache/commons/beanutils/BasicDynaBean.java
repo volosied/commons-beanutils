@@ -85,12 +85,12 @@ public class BasicDynaBean implements DynaBean, Serializable {
         if (value == null) {
             throw new NullPointerException
                     ("No mapped value for '" + name + "(" + key + ")'");
+        } else if (value instanceof Map) {
+            return (((Map<?, ?>) value).containsKey(key));
+        } else {
+            throw new IllegalArgumentException
+                    ("Non-mapped property for '" + name + "(" + key + ")'");
         }
-        if (value instanceof Map) {
-            return ((Map<?, ?>) value).containsKey(key);
-        }
-        throw new IllegalArgumentException
-                ("Non-mapped property for '" + name + "(" + key + ")'");
 
     }
 
@@ -167,15 +167,14 @@ public class BasicDynaBean implements DynaBean, Serializable {
         if (value == null) {
             throw new NullPointerException
                     ("No indexed value for '" + name + "[" + index + "]'");
-        }
-        if (value.getClass().isArray()) {
-            return Array.get(value, index);
-        }
-        if (value instanceof List) {
+        } else if (value.getClass().isArray()) {
+            return (Array.get(value, index));
+        } else if (value instanceof List) {
             return ((List<?>) value).get(index);
+        } else {
+            throw new IllegalArgumentException
+                    ("Non-indexed property for '" + name + "[" + index + "]'");
         }
-        throw new IllegalArgumentException
-                ("Non-indexed property for '" + name + "[" + index + "]'");
 
     }
 
@@ -198,12 +197,12 @@ public class BasicDynaBean implements DynaBean, Serializable {
         if (value == null) {
             throw new NullPointerException
                     ("No mapped value for '" + name + "(" + key + ")'");
+        } else if (value instanceof Map) {
+            return (((Map<?, ?>) value).get(key));
+        } else {
+            throw new IllegalArgumentException
+                    ("Non-mapped property for '" + name + "(" + key + ")'");
         }
-        if (value instanceof Map) {
-            return ((Map<?, ?>) value).get(key);
-        }
-        throw new IllegalArgumentException
-                ("Non-mapped property for '" + name + "(" + key + ")'");
 
     }
 
@@ -302,12 +301,12 @@ public class BasicDynaBean implements DynaBean, Serializable {
         if (value == null) {
             throw new NullPointerException
                     ("No mapped value for '" + name + "(" + key + ")'");
-        }
-        if (!(value instanceof Map)) {
+        } else if (value instanceof Map) {
+            ((Map<?, ?>) value).remove(key);
+        } else {
             throw new IllegalArgumentException
                     ("Non-mapped property for '" + name + "(" + key + ")'");
         }
-        ((Map<?, ?>) value).remove(key);
 
     }
 
@@ -333,8 +332,7 @@ public class BasicDynaBean implements DynaBean, Serializable {
         if (prop == null) {
             throw new NullPointerException
                     ("No indexed value for '" + name + "[" + index + "]'");
-        }
-        if (prop.getClass().isArray()) {
+        } else if (prop.getClass().isArray()) {
             Array.set(prop, index, value);
         } else if (prop instanceof List) {
             try {
@@ -406,17 +404,17 @@ public class BasicDynaBean implements DynaBean, Serializable {
         if (prop == null) {
             throw new NullPointerException
                     ("No mapped value for '" + name + "(" + key + ")'");
-        }
-        if (!(prop instanceof Map)) {
+        } else if (prop instanceof Map) {
+            @SuppressWarnings("unchecked")
+            final
+            // This is safe to cast because mapped properties are always
+            // maps of types String -> Object
+            Map<String, Object> map = (Map<String, Object>) prop;
+            map.put(key, value);
+        } else {
             throw new IllegalArgumentException
                     ("Non-mapped property for '" + name + "(" + key + ")'");
         }
-        @SuppressWarnings("unchecked")
-        final
-        // This is safe to cast because mapped properties are always
-        // maps of types String -> Object
-        Map<String, Object> map = (Map<String, Object>) prop;
-        map.put(key, value);
 
     }
 

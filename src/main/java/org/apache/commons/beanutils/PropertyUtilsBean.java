@@ -1285,60 +1285,81 @@ public class PropertyUtilsBean {
         try {
             return method.invoke(bean, values);
         } catch (final NullPointerException cause) {
-            final StringBuilder valueString = new StringBuilder();
+            // JDK 1.3 and JDK 1.4 throw NullPointerException if an argument is
+            // null for a primitive value (JDK 1.5+ throw IllegalArgumentException)
+            String valueString = "";
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
-                    if (i > 0) {
-                        valueString.append(", ");
+                    if (i>0) {
+                        valueString += ", " ;
                     }
                     if (values[i] == null) {
-                        valueString.append("<null>");
+                        valueString += "<null>";
                     } else {
-                        valueString.append(values[i].getClass().getName());
+                        valueString += (values[i]).getClass().getName();
                     }
                 }
             }
-            final StringBuilder expectedString = new StringBuilder();
+            String expectedString = "";
             final Class<?>[] parTypes = method.getParameterTypes();
             if (parTypes != null) {
                 for (int i = 0; i < parTypes.length; i++) {
                     if (i > 0) {
-                        expectedString.append(", ");
+                        expectedString += ", ";
                     }
-                    expectedString.append(parTypes[i].getName());
+                    expectedString += parTypes[i].getName();
                 }
             }
-            throw new IllegalArgumentException("Cannot invoke " + method.getDeclaringClass().getName() + "." + method.getName() + " on bean class '" +
-                    bean.getClass() + "' - " + cause.getMessage() + " - had objects of type \"" +
-                    valueString.append("\" but expected signature \"").append(expectedString.toString()).append("\"").toString(), cause);
-
+            final IllegalArgumentException e = new IllegalArgumentException(
+                "Cannot invoke " + method.getDeclaringClass().getName() + "."
+                + method.getName() + " on bean class '" + bean.getClass() +
+                "' - " + cause.getMessage()
+                // as per https://issues.apache.org/jira/browse/BEANUTILS-224
+                + " - had objects of type \"" + valueString
+                + "\" but expected signature \""
+                +   expectedString + "\""
+                );
+            if (!BeanUtils.initCause(e, cause)) {
+                log.error("Method invocation failed", cause);
+            }
+            throw e;
         } catch (final IllegalArgumentException cause) {
-            final StringBuilder valueString = new StringBuilder();
+            String valueString = "";
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
-                    if (i > 0) {
-                        valueString.append(", ");
+                    if (i>0) {
+                        valueString += ", " ;
                     }
                     if (values[i] == null) {
-                        valueString.append("<null>");
+                        valueString += "<null>";
                     } else {
-                        valueString.append(values[i].getClass().getName());
+                        valueString += (values[i]).getClass().getName();
                     }
                 }
             }
-            final StringBuilder expectedString = new StringBuilder();
+            String expectedString = "";
             final Class<?>[] parTypes = method.getParameterTypes();
             if (parTypes != null) {
                 for (int i = 0; i < parTypes.length; i++) {
                     if (i > 0) {
-                        expectedString.append(", ");
+                        expectedString += ", ";
                     }
-                    expectedString.append(parTypes[i].getName());
+                    expectedString += parTypes[i].getName();
                 }
             }
-            throw new IllegalArgumentException("Cannot invoke " + method.getDeclaringClass().getName() + "." + method.getName() + " on bean class '" +
-                    bean.getClass() + "' - " + cause.getMessage() + " - had objects of type \"" +
-                    valueString.append("\" but expected signature \"").append(expectedString.toString()).append("\"").toString(), cause);
+            final IllegalArgumentException e = new IllegalArgumentException(
+                "Cannot invoke " + method.getDeclaringClass().getName() + "."
+                + method.getName() + " on bean class '" + bean.getClass() +
+                "' - " + cause.getMessage()
+                // as per https://issues.apache.org/jira/browse/BEANUTILS-224
+                + " - had objects of type \"" + valueString
+                + "\" but expected signature \""
+                +   expectedString + "\""
+                );
+            if (!BeanUtils.initCause(e, cause)) {
+                log.error("Method invocation failed", cause);
+            }
+            throw e;
 
         }
     }

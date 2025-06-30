@@ -425,6 +425,8 @@ public abstract class DateTimeConverter extends AbstractConverter {
     /**
      * Set the date format patterns to use to convert
      * dates to/from a <code>java.lang.String</code>.
+     * 
+     * Note: Reverted Java 8 String#join call
      *
      * @see SimpleDateFormat
      * @param patterns Array of format patterns.
@@ -432,22 +434,16 @@ public abstract class DateTimeConverter extends AbstractConverter {
     public void setPatterns(final String[] patterns) {
         this.patterns = patterns;
         if (patterns != null && patterns.length > 1) {
-            final String buffer = join(", ", patterns);
-            displayPatterns = buffer;
+            final StringBuilder buffer = new StringBuilder();
+            for (int i = 0; i < patterns.length; i++) {
+                if (i > 0) {
+                    buffer.append(", ");
+                }
+                buffer.append(patterns[i]);
+            }
+            displayPatterns = buffer.toString();
         }
         setUseLocaleFormat(true);
-    }
-    // String.join(CharSequence delimiter, CharSequence... elements) was added in Java 8, so here's a replacement for Java 6.
-    // Joins the characters within the elements array by the delimiter. 
-    private String join(CharSequence delimiter, CharSequence[] elements) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < elements.length; i++) {
-            sb.append(elements[i]);
-            if (i < elements.length - 1) {
-                sb.append(delimiter);
-            }
-        }
-        return sb.toString();
     }
 
 

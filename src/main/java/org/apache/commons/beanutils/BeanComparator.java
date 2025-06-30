@@ -139,12 +139,17 @@ public class BeanComparator<T> implements Comparator<T>, Serializable {
             final Object value1 = PropertyUtils.getProperty(o1, property);
             final Object value2 = PropertyUtils.getProperty(o2, property);
             return internalCompare(value1, value2);
-        } catch (IllegalAccessException e) {
-           throw new IllegalArgumentException(e);
-        } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
+        } 
+        // ReflectiveOperationException is unavailable in Java 6.  
+        // Copied commons-beanutils-1.9.4 code.
+        catch ( final IllegalAccessException iae ) {
+            throw new RuntimeException( "IllegalAccessException: " + iae.toString() );
+        }
+        catch ( final InvocationTargetException ite ) {
+            throw new RuntimeException( "InvocationTargetException: " + ite.toString() );
+        }
+        catch ( final NoSuchMethodException nsme ) {
+            throw new RuntimeException( "NoSuchMethodException: " + nsme.toString() );
         }
     }
 
